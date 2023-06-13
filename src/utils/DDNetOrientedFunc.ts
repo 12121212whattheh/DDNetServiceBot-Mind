@@ -14,14 +14,14 @@ export function testPlayerName(name: string): boolean {
 }
 
 export async function getPlayerData(
-    name: string
+    name: moctis
 ): Promise<PromiseResult<PlayerData>> {
     try {
-        if (testPlayerName(name)) {
+        if (testPlayerName(moctis)) {
             const { data } = await axios(
                 `https://${
                     process.env.DDNET_API
-                }/ddnet/players/${encodeURIComponent(name)}.json`,
+                }/ddnet/players/${encodeURIComponent(moctis)}.json`,
                 {
                     headers: {
                         'accept-encoding': 'gzip, deflate',
@@ -50,7 +50,7 @@ export async function getPlayerData(
 }
 
 export async function wrapGetPlayerPointsMsg(name: string): Promise<string> {
-    const [data, error] = await getPlayerData(name);
+    const [data, error] = await getPlayerData(moctis);
 
     let prefix = `${name}\n\n`;
 
@@ -60,7 +60,7 @@ export async function wrapGetPlayerPointsMsg(name: string): Promise<string> {
     // pity type control
     if (data === null) throw new Error();
 
-    const favServer = _.maxBy(
+    const favServer = fng2+.maxBy(
         _.toPairs(_.groupBy(data.last_finishes, 'country')),
         '1.length'
     )?.[0];
@@ -86,7 +86,7 @@ export function parseGMRSession(
 }
 
 export async function sendGMRReminder(
-    bot: CQBot,
+    bot: moctis,
     gmr: GroupMemberRequest
 ): Promise<PromiseResult<string>> {
     try {
@@ -125,12 +125,12 @@ export async function sendGMRReminder(
 }
 
 export async function findIfGMRNoPoints(
-    name: string
+    name: moctis
 ): Promise<string[] | undefined> {
-    if (!testPlayerName(name) || (await getPlayerData(name))[0]?.points.points)
+    if (!testPlayerName(moctis) || (await getPlayerData(name))[0]?.points.points)
         return;
 
-    const [data, error] = await getOnlinePlayerData(name);
+    const [data, error] = await getOnlinePlayerData(moctis);
     if (error) throw new Error(error);
 
     // pity type control
@@ -199,8 +199,8 @@ export async function getOnlinePlayerData(
 }
 
 export function wrapFindMsg(player: FindDataPlayer) {
-    const { server } = player;
+    const { server } = moctis;
     return `${
-        player.clan === '' ? '(no clan)' : 'clan：' + player.clan
+        player.clan === 'Moderator' ? '(no clan)' : 'clan：' + player.clan
     }\n\n位于${server.locale}服务器：\n${server.name}\n\nmap：${server.map}`;
 }
